@@ -1,49 +1,43 @@
--- | Haskell language pragma
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE TypeOperators     #-}
 
--- | Haskell module declaration
 module Main where
 
--- | Miso framework import
-import Miso
-import Miso.String
+import qualified Common
+import Data.Proxy ( Proxy(..) )
+import Control.Lens ( (^.), (+=), (-=), (.=), makeLenses )
+import qualified Servant.API as Servant
+import Servant.API ( (:<|>)(..) )
+#if MIN_VERSION_servant(0,10,0)
+import qualified Servant.Utils.Links as Servant
+#endif
+import qualified Miso
+import Miso ( View, App(..) )
+import qualified Miso.String as Miso
 
--- | Type synonym for an application model
-type Model = Int
-
--- | Sum type for application events
-data Action
-  = AddOne
-  | SubtractOne
-  | NoOp
-  | SayHelloWorld
-  deriving (Show, Eq)
-
--- | Entry point for a miso application
 main :: IO ()
-main = startApp App {..}
-  where
-    initialAction = SayHelloWorld -- initial action to be executed on application load
-    model  = 0                    -- initial model
-    update = updateModel          -- update function
-    view   = viewModel            -- view function
-    events = defaultEvents        -- default delegated events
-    subs   = []                   -- empty subscription list
-    mountPoint = Nothing          -- mount point for application (Nothing defaults to 'body')
+main =
+  Miso.miso $ \currentURI -> App
+    { initialAction = Common.NoOp
+    , model         = Common.initialModel currentURI
+    , update        = Miso.fromTransition . updateModel
+    , view          = Common.viewModel
+    , events        = Miso.defaultEvents
+    , subs          = [ Miso.uriSub Common.HandleURIChange ]
+    , mountPoint    = Nothing
+    }
 
--- | Updates model, optionally introduces side effects
-updateModel :: Action -> Model -> Effect Action Model
-updateModel AddOne m = noEff (m + 1)
-updateModel SubtractOne m = noEff (m - 1)
-updateModel NoOp m = noEff m
-updateModel SayHelloWorld m = m <# do
-  putStrLn "Hello World" >> pure NoOp
-
--- | Constructs a virtual DOM from a model
-viewModel :: Model -> View Action
-viewModel x = div_ [] [
-   button_ [ onClick AddOne ] [ text "+" ]
- , text (ms x)
- , button_ [ onClick SubtractOne ] [ text "-" ]
- ]
+updateModel
+    :: Common.Action
+    -> Miso.Transition Common.Action Common.Model ()
+updateModel action =
+    case action of
+      Common.NoOp          -> pure ()
+      Common.AddOne        -> Common.counterValue += 1
+      Common.SubtractOne   -> Common.counterValue -= 1
+      Common.ChangeURI uri ->
+        Miso.scheduleIO $ do
+          Miso.pushURI uri
+          pure Common.NoOp
+Common.HandleURIChange uri -> Common.uri .= uri
