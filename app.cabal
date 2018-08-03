@@ -14,10 +14,20 @@ executable server
     buildable: False
   else
     ghc-options:   -O2 -threaded -Wall
-    build-depends: base,
+    build-depends: aeson,
+                   base < 5,
+                   containers,
+                   http-types,
+                   lens,
+                   lucid,
                    miso,
+                   mtl,
+                   network-uri,
                    servant,
+                   servant-lucid,
+                   servant-server,
                    wai,
+                   wai-extra,
                    warp
 
 executable client
@@ -29,6 +39,10 @@ executable client
     buildable: False
   else
     ghcjs-options: -dedupe
-    build-depends: base,
+    build-depends: aeson,
+                   base < 5,
+                   containers,
+                   lens,
                    miso,
+                   network-uri,
                    servant
