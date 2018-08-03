@@ -1,4 +1,4 @@
-.PHONY: all build clean deps
+.PHONY: all build clean deps run
 
 all: build
 
@@ -7,6 +7,9 @@ build: deps
 
 deps:
 	stack setup
+
+run: build
+	xdg-open $$(stack path --local-install-root)/bin/client.jsexe/index.html
 
 clean:
 	stack clean

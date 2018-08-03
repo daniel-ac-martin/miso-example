@@ -20,8 +20,11 @@ make
 Running
 -------
 ```bash
-open $(stack path --local-install-root)/bin/app.jsexe/index.html
+make run
 ```
+
+MISC
+----
 
 Using GHCJSi
 
