@@ -104,7 +104,7 @@ homeLink =
 #if MIN_VERSION_servant(0,10,0)
     Servant.linkURI $ Servant.safeLink (Proxy @ViewRoutes) (Proxy @Home)
 #else
-    safeLink (Proxy @ViewRoutes) (Proxy @Home)
+    Servant.safeLink (Proxy @ViewRoutes) (Proxy @Home)
 #endif
 
 -- Network.URI that points to the flipped route
@@ -113,5 +113,5 @@ flippedLink =
 #if MIN_VERSION_servant(0,10,0)
     Servant.linkURI $ Servant.safeLink (Proxy @ViewRoutes) (Proxy @Flipped)
 #else
-    safeLink (Proxy @ViewRoutes) (Proxy @Flipped)
+    Servant.safeLink (Proxy @ViewRoutes) (Proxy @Flipped)
 #endif
