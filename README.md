@@ -1,20 +1,24 @@
+An example of an isomorphic Miso application
+============================================
+
+**Note:** Work in progress
+
+Prerequisites
+-------------
+* Docker
+* Stack
+* Make
+
 Building
 --------
-
-Run stack setup. This might take a long time, since it will have to build GHCJS.
-
-```bash
-stack setup
-```
-
-Run stack build to get the static assets
+The first time this is run it will take a long time as it must build GHCJS.
 
 ```bash
-stack build
+make
 ```
 
-See the result
-
+Running
+-------
 ```bash
 open $(stack path --local-install-root)/bin/app.jsexe/index.html
 ```
