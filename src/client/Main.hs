@@ -40,4 +40,4 @@ updateModel action =
         Miso.scheduleIO $ do
           Miso.pushURI uri
           pure Common.NoOp
-Common.HandleURIChange uri -> Common.uri .= uri
+      Common.HandleURIChange uri -> Common.uri .= uri
