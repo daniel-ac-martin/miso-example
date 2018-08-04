@@ -1,0 +1,9 @@
+resolver: lts-9.21
+
+packages:
+ - '.'
+extra-deps:
+ - miso-0.18.0.0
+
+docker:
+  enable: true
