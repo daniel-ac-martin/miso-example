@@ -23,9 +23,9 @@ executable server
                    miso,
                    mtl,
                    network-uri,
-                   servant,
+                   servant >= 0.11,
                    servant-lucid,
-                   servant-server,
+                   servant-server >= 0.11,
                    wai,
                    wai-extra,
                    warp
@@ -45,4 +45,4 @@ executable client
                    lens,
                    miso,
                    network-uri,
-                   servant
+                   servant >= 0.11
