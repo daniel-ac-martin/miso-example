@@ -1,0 +1,9 @@
+FROM nixos/nix
+
+RUN nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs \
+ && nix-channel --update
+
+WORKDIR /build/
+COPY . /build/
+
+RUN nix-build

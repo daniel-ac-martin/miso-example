@@ -1,21 +1,24 @@
-.PHONY: all build clean deps dist-clean run
+NAME = miso-example
+
+.PHONY: all build clean docker run
 
 all: build
 
-build: deps
-	stack build --stack-yaml=server.stack.yaml
-	stack build --stack-yaml=client.stack.yaml
+build: build/
+	docker build -f Dockerfile.build -t "$(NAME)-build" .
+	docker container create --name extract "$(NAME)-build" .
+	docker container cp extract:/out ./build/
+	docker container rm -f extract
 
-deps:
-	stack setup --stack-yaml=server.stack.yaml
-	stack setup --stack-yaml=client.stack.yaml
+docker: build
+	docker build -f Dockerfile -t "$(NAME)" .
 
 run: build
-	xdg-open $$(stack path --local-install-root)/bin/client.jsexe/index.html
+	xdg-open "http://localhost:8080/"
+	build/app
 
 clean:
-	stack clean --stack-yaml=server.stack.yaml
-	stack clean --stack-yaml=client.stack.yaml
+	docker rmi "$(NAME)-build"
 
-dist-clean: clean
-	rm -rf .stack-work/
+build/:
+	mkdir -p build/
